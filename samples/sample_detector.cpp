@@ -32,9 +32,9 @@ int main()
 	config_v4_tiny.net_type = YOLOV4_TINY;
 	config_v4_tiny.detect_thresh = 0.5;
 	config_v4_tiny.file_model_cfg = "../configs/yolov4-tiny.cfg";
-	config_v4_tiny.file_model_weights = "../configs/yolov4-tiny.weights";
+	config_v4_tiny.file_model_weights = "E:/allModel/yolov4-tiny.weights";
 	config_v4_tiny.calibration_image_list_file_txt = "../configs/calibration_images.txt";
-	config_v4_tiny.inference_precison = FP32;
+	config_v4_tiny.inference_precison = INT8;
 
 	Config config_v5;
 	config_v5.net_type = YOLOV5;
@@ -43,8 +43,16 @@ int main()
 	config_v5.file_model_weights = "../configs/yolov5-3.0/yolov5s.weights";
 	config_v5.inference_precison = FP32;
 
+	Config myconfig_v4;
+	myconfig_v4.net_type = YOLOV4_TINY;
+	myconfig_v4.detect_thresh = 0.5;
+	myconfig_v4.file_model_cfg = "D:/VS_2015_work/ActivityRecognitionCom/ActivityRecognitionCom/model/person_ball_detect.cfg";
+	myconfig_v4.file_model_weights = "D:/VS_2015_work/ActivityRecognitionCom/ActivityRecognitionCom/model/person_ball_detect.weights";
+	config_v4_tiny.calibration_image_list_file_txt = "../configs/calibration_images.txt";
+	config_v4_tiny.inference_precison = INT8;
+
 	std::unique_ptr<Detector> detector(new Detector());
-	detector->init(config_v4);
+	detector->init(myconfig_v4);
 	cv::Mat image0 = cv::imread("../configs/dog.jpg", cv::IMREAD_UNCHANGED);
 	cv::Mat image1 = cv::imread("../configs/person.jpg", cv::IMREAD_UNCHANGED);
 	std::vector<BatchResult> batch_res;

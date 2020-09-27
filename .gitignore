@@ -4,7 +4,8 @@ build/
 *.pdb
 x64/
 ipch/
-data/
+data/*.jpg
+data/*.png
 *.sdf
 *.opensdf
 *.exp

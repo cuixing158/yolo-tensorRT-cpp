@@ -28,9 +28,9 @@ SOFTWARE.
 #include <iostream>
 #include <iterator>
 
-Int8EntropyCalibrator::Int8EntropyCalibrator(const uint32_t& batchSize, const std::string& calibImages,
-                                             const std::string& calibImagesPath,
-                                             const std::string& calibTableFilePath,
+Int8EntropyCalibrator::Int8EntropyCalibrator(const uint32_t& batchSize, const std::string& calibImages,// 传入batchSIze = 1,calibImages = "../configs/calibration_images.txt";
+                                             const std::string& calibImagesPath, // 此时传入的""，该变量当作calibImages前缀路径存在
+                                             const std::string& calibTableFilePath, // 传入的 E:/allModel/yolov4-calibration.table
                                              const uint64_t& inputSize, const uint32_t& inputH,
                                              const uint32_t& inputW, const std::string& inputBlobName) :
     m_BatchSize(batchSize),
@@ -39,7 +39,7 @@ Int8EntropyCalibrator::Int8EntropyCalibrator(const uint32_t& batchSize, const st
     m_InputSize(inputSize),
     m_InputCount(batchSize * inputSize),
     m_InputBlobName(inputBlobName),
-    m_CalibTableFilePath(calibTableFilePath),
+    m_CalibTableFilePath(calibTableFilePath),// 传入的 E:/allModel/yolov4-calibration.table
     m_ImageIndex(0)
 {
     if (!fileExists(m_CalibTableFilePath, false))
@@ -99,12 +99,12 @@ const void* Int8EntropyCalibrator::readCalibrationCache(size_t& length)
         std::cout << "New calibration table will be created to build the engine" << std::endl;
         output = nullptr;
     }
-
     return output;
 }
 
 void Int8EntropyCalibrator::writeCalibrationCache(const void* cache, size_t length)
 {
+	std::cout << __FUNCTION__ << "," << __LINE__ << std::endl;
     assert(!m_CalibTableFilePath.empty());
     std::ofstream output(m_CalibTableFilePath, std::ios::binary);
     output.write(reinterpret_cast<const char*>(cache), length);

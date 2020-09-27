@@ -1,0 +1,1 @@
+此路径存储calibrate校订数据集路径,图像路径写到“../configs/calibration_images.txt”,每行写一个图片路径，图片全部来自于训练集的子集，大概100张左右

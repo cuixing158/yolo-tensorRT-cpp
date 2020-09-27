@@ -183,9 +183,9 @@ std::vector<std::string> loadImageList(const std::string filename, const std::st
             std::string prefixed = prefix + file;
             if (fileExists(prefixed, false))
                 file = prefixed;
-            else
-                std::cerr << "WARNING: couldn't find: " << prefixed
-                          << " while loading: " << filename << std::endl;
+           // else
+                /*std::cerr << "WARNING: couldn't find: " << prefixed
+                          << " while loading: " << filename << std::endl;*/
         }
     }
     return fileList;

@@ -29,6 +29,7 @@ SOFTWARE.
 #include "ds_image.h"
 #include "trt_utils.h"
 
+// 在最开始初始化函数中校订int8类，工作原理为：先判断是否有校订table存在，有的话直接读取，没有就对data/目录下的图像进行calibrate生成table，先调用函数readCalibrationCache,然后getBatch,最后writeCalibrationCache
 class Int8EntropyCalibrator : public nvinfer1::IInt8EntropyCalibrator
 {
 public:
@@ -39,7 +40,7 @@ public:
     virtual ~Int8EntropyCalibrator();
 
     int getBatchSize() const override { return m_BatchSize; }
-    bool getBatch(void* bindings[], const char* names[], int nbBindings) override;
+    bool getBatch(void* bindings[], const char* names[], int nbBindings) override; // 会对每幅图像进行校订
     const void* readCalibrationCache(size_t& length) override;
     void writeCalibrationCache(const void* cache, size_t length) override;
 

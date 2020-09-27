@@ -87,11 +87,11 @@ struct TensorInfo
     uint32_t stride_h{0};
     uint32_t stride_w{0};
     uint32_t gridSize{0};// grid_h等同，是特征图的大小
-	uint32_t grid_h{ 0 };
-	uint32_t grid_w{ 0 };
+	uint32_t grid_h{ 0 }; // 当前yolo层特征图的height
+	uint32_t grid_w{ 0 }; // 当前yolo层特征图的width
     uint32_t numClasses{0};// 总的类别数量，比如yolov3/v4共80类别
     uint32_t numBBoxes{0}; // yolov3/v4层的mask数量，yolov2的anchors数量，大小为N，见parseConfigBlocks（）
-    uint64_t volume{0}; // 当前特征图的输出bs*na*h*w*(5+nc)的数量，其中bs=1
+    uint64_t volume{0}; // 当前特征图的输出bs*na*h*w*(5+nc)的数量，其中bs大小来自于cfg文件中的batch
     std::vector<uint32_t> masks; // anchors，w*h形式，大小为2N
     std::vector<float> anchors;
     int bindingIndex{-1};
@@ -121,18 +121,18 @@ public:
 protected:
     Yolo( const NetworkInfo& networkInfo, const InferParams& inferParams);
     std::string m_EnginePath;
-    const std::string m_NetworkType;
+    const std::string m_NetworkType;// class_detector.h中定义的YOLOV2，YOLOV2_TINY，...
     const std::string m_ConfigFilePath;
     const std::string m_WtsFilePath;
     const std::string m_LabelsFilePath;
     const std::string m_Precision;
     const std::string m_DeviceType;
-    const std::string m_CalibImages;
-    const std::string m_CalibImagesFilePath;
-    std::string m_CalibTableFilePath;
+    const std::string m_CalibImages; // 实际传进来的为校订图像路径文本文件
+    const std::string m_CalibImagesFilePath;// 为传经来的前缀，在calibrator.cpp中Int8EntropyCalibrator（）用到，目前为"" 
+    std::string m_CalibTableFilePath; //  class_yolo_detector.hpp中传入
     const std::string m_InputBlobName;
-    std::vector<TensorInfo> m_OutputTensors;
-    std::vector<std::map<std::string, std::string>> m_configBlocks;
+    std::vector<TensorInfo> m_OutputTensors;// 一个所有输出yolo层的tensor的集合
+    std::vector<std::map<std::string, std::string>> m_configBlocks;// 解析cfg文件中的key,value，如果遇到层,就是type，value
     uint32_t m_InputH; // cfg文件中定义的height,此类初始化就加载.cfg文件解析，parseConfigBlocks（）子函数里面
     uint32_t m_InputW; //  cfg文件中定义的width
     uint32_t m_InputC;
@@ -153,9 +153,11 @@ protected:
     const bool m_PrintPredictions;
     // TRT specific members
 	//Logger glogger;
-    uint32_t m_BatchSize = 1;
+    uint32_t m_BatchSize = 1; // 默认为1，实际后面来源于cfg文件中的输入 [net] 的batch值，见parseConfigBlocks（）函数
+
+	// 以下为来自tensorRT官方的库定义
     nvinfer1::INetworkDefinition* m_Network;
-    nvinfer1::IBuilder* m_Builder ;
+    nvinfer1::IBuilder* m_Builder ;// 根据网络定义构建一个推理引擎
     nvinfer1::IHostMemory* m_ModelStream;
     nvinfer1::ICudaEngine* m_Engine;
     nvinfer1::IExecutionContext* m_Context;
@@ -165,8 +167,9 @@ protected:
     PluginFactory* m_PluginFactory;
     std::unique_ptr<YoloTinyMaxpoolPaddingFormula> m_TinyMaxpoolPaddingFormula;
 
+	// 需重写
     virtual std::vector<BBoxInfo> decodeTensor(const int imageIdx, const int imageH,
-                                               const int imageW, const TensorInfo& tensor)
+                                               const int imageW, const TensorInfo& tensor) // 子类需要实现
         = 0;
 
     inline void addBBoxProposal(const float bx, const float by, const float bw, const float bh,

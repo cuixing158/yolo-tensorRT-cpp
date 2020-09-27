@@ -10,7 +10,7 @@ using namespace nvinfer1;
 REGISTER_TENSORRT_PLUGIN(DetectPluginCreator);
 
 Yolo::Yolo( const NetworkInfo& networkInfo, const InferParams& inferParams) :
-	m_NetworkType(networkInfo.networkType),
+	m_NetworkType(networkInfo.networkType),// class_yolo_detector.hpp定义，字符串类型
 	m_ConfigFilePath(networkInfo.configFilePath),
 	m_WtsFilePath(networkInfo.wtsFilePath),
 	m_LabelsFilePath(networkInfo.labelsFilePath),
@@ -51,7 +51,7 @@ Yolo::Yolo( const NetworkInfo& networkInfo, const InferParams& inferParams) :
 	{
 		parseConfigBlocks();
 	}
-	m_EnginePath = networkInfo.data_path + "-" + m_Precision + "-batch" + std::to_string(m_BatchSize) + ".engine";
+	m_EnginePath = networkInfo.data_path + "-" + m_Precision + "-batch" + std::to_string(m_BatchSize) + ".engine"; // data_path传入的为比如 E:/allModel/yolov4，是根据weights路径得来
 	if (m_Precision == "kFLOAT")
 	{
 		if ("yolov5" == m_NetworkType)
@@ -62,7 +62,6 @@ Yolo::Yolo( const NetworkInfo& networkInfo, const InferParams& inferParams) :
 		else
 		{
 			createYOLOEngine();
-			// 2020.9.25阅读到代码到此-------------------
 		}
 	}
 	else if (m_Precision == "kINT8")
@@ -70,13 +69,14 @@ Yolo::Yolo( const NetworkInfo& networkInfo, const InferParams& inferParams) :
 		Int8EntropyCalibrator calibrator(m_BatchSize, m_CalibImages, m_CalibImagesFilePath,
 			m_CalibTableFilePath, m_InputSize, m_InputH, m_InputW,
 			m_InputBlobName);
+		
 		if ("yolov5" == m_NetworkType)
 		{
 			create_engine_yolov5(nvinfer1::DataType::kINT8, &calibrator);
 		}
 		else
 		{
-			createYOLOEngine(nvinfer1::DataType::kINT8, &calibrator);
+			createYOLOEngine(nvinfer1::DataType::kINT8, &calibrator); // 根据caliribate img list去生成engine, 具体是该函数内部先定义好网络结构，再根据config去生成引擎
 		}
 	}
 	else if (m_Precision == "kHALF")
@@ -434,7 +434,7 @@ void Yolo::createYOLOEngine(const nvinfer1::DataType dataType, Int8EntropyCalibr
  //   for (auto& tensor : m_OutputTensors) std::cout << tensor.blobName << std::endl;
 
     // Create and cache the engine if not already present
-    if (fileExists(m_EnginePath))
+    if (fileExists(m_EnginePath)) // 以前有m_EnginePath就直接返回
     {
         std::cout << "Using previously generated plan file located at " << m_EnginePath
                   << std::endl;
@@ -481,7 +481,7 @@ void Yolo::createYOLOEngine(const nvinfer1::DataType dataType, Int8EntropyCalibr
 
     // Build the engine
     std::cout << "Building the TensorRT Engine..." << std::endl;
-    m_Engine = m_Builder->buildEngineWithConfig(*m_Network,*config);
+    m_Engine = m_Builder->buildEngineWithConfig(*m_Network,*config); // 根据calibrateImg list进行校订的，新创建的engine
     assert(m_Engine != nullptr);
     std::cout << "Building complete!" << std::endl;
 
@@ -1028,13 +1028,13 @@ void Yolo::parseConfigBlocks()
                 }
                 else
                 {
-                    float anchor = std::stof(trim(anchorString));
+                    float anchor = std::stof(trim(anchorString)); // convert string to float
                     outputTensor.anchors.push_back(anchor);
                     break;
                 }
             }
 
-            if ((m_NetworkType == "yolov3") ||
+            if ((m_NetworkType == "yolov3") || // m_NetworkType已经在初始化列表中，只有yolov3/v4才有定义的mask
 				(m_NetworkType == "yolov3-tiny") ||
 				(m_NetworkType == "yolov4") ||
 				(m_NetworkType == "yolov4-tiny"))
@@ -1046,8 +1046,8 @@ void Yolo::parseConfigBlocks()
                 std::string maskString = block.at("mask");
                 while (!maskString.empty())
                 {
-                    size_t npos = maskString.find_first_of(',');
-                    if (npos != std::string::npos)
+                    size_t npos = maskString.find_first_of(','); // 参考：https://blog.csdn.net/JIEJINQUANIL/article/details/51789682?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-2.channel_param&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromBaidu-2.channel_param
+                    if (npos != std::string::npos) // std::string::npos
                     {
                         uint32_t mask = std::stoul(trim(maskString.substr(0, npos)));
                         outputTensor.masks.push_back(mask);
