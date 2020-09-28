@@ -40,7 +40,7 @@ public:
     virtual ~Int8EntropyCalibrator();
 
     int getBatchSize() const override { return m_BatchSize; }
-    bool getBatch(void* bindings[], const char* names[], int nbBindings) override; // 会对每幅图像进行校订
+    bool getBatch(void* bindings[], const char* names[], int nbBindings) override; // 会对每幅图像进行校订,校准时反复用到，https://arleyzhang.github.io/articles/95d15d89/
     const void* readCalibrationCache(size_t& length) override;
     void writeCalibrationCache(const void* cache, size_t length) override;
 

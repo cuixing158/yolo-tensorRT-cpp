@@ -19,9 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\CmFile\CmFile.cpp" />
     <ClCompile Include="..\..\samples\sample_detector.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\CmFile\CmFile.h" />
+    <ClInclude Include="..\..\CmFile\timeString.h" />
     <ClInclude Include="..\..\extra\class_timer.hpp" />
     <ClInclude Include="..\..\modules\class_detector.h" />
   </ItemGroup>
@@ -114,6 +117,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>..\..\extra;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

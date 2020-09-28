@@ -1,9 +1,10 @@
 #ifndef CLASS_DETECTOR_H_
 #define CLASS_DETECTOR_H_
 // 此类Detector只是个包装封装类而已，实际起作用的是YoloDectector类
-#include "API.h"
+
 #include <iostream>
 #include <opencv2/opencv.hpp>
+#include "API.h"
 
 struct Result
 {
@@ -14,7 +15,7 @@ struct Result
 
 typedef std::vector<Result> BatchResult;
 
-enum ModelType
+enum class ModelType
 {
 	YOLOV2 = 0,
 	YOLOV3,
@@ -25,7 +26,7 @@ enum ModelType
 	YOLOV5
 };
 
-enum Precision
+enum class Precision // 注意小心重定义 https://blog.csdn.net/wb175208/article/details/78772773
 {
 	INT8 = 0,
 	FP16,
@@ -40,9 +41,9 @@ struct Config
 
 	float detect_thresh							= 0.9;
 
-	ModelType	net_type						= YOLOV3;
+	ModelType	net_type						= ModelType::YOLOV3;
 
-	Precision	inference_precison				= FP32;
+	Precision	inference_precison				= Precision::FP32;
 	
 	int	gpu_id									= 0;
 

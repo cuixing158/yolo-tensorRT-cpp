@@ -60,7 +60,7 @@ public:
 			auto remaining = nmsAllClasses(_p_net->getNMSThresh(),
 				binfo,
 				_p_net->getNumClasses(),
-				_vec_net_type[_config.net_type]);
+				_vec_net_type[EnumToIdx(_config.net_type)]);
 			if (0 == remaining.size())
 			{
 				continue;
@@ -84,6 +84,32 @@ public:
 
 private:
 
+	int EnumToIdx(ModelType elem) // 枚举到int的映射,https://www.coder.work/article/2769365
+	{
+		switch (elem)
+		{
+		case ModelType::YOLOV2:  return 0;
+		case ModelType::YOLOV3:  return 1;
+		case ModelType::YOLOV2_TINY:  return 2;
+		case ModelType::YOLOV3_TINY:  return 3;
+		case ModelType::YOLOV4:  return 4;
+		case ModelType::YOLOV4_TINY:  return 5;
+		case ModelType::YOLOV5: return 6;
+		}
+		throw std::invalid_argument("EnumToIdx: no conversion"); // or whatever
+	}
+
+	int EnumToIdx(Precision elem) // 枚举到int的映射
+	{
+		switch (elem)
+		{
+		case Precision::INT8:  return 0;
+		case Precision::FP16:  return 1;
+		case Precision::FP32:  return 2;
+		}
+		throw std::invalid_argument("EnumToIdx: no conversion"); // or whatever
+	}
+
 	void set_gpu_id(const int id = 0)
 	{
 		cudaError_t status = cudaSetDevice(id);
@@ -96,10 +122,10 @@ private:
 
 	void parse_config()
 	{
-		_yolo_info.networkType = _vec_net_type[_config.net_type];
+		_yolo_info.networkType = _vec_net_type[EnumToIdx(_config.net_type)];
 		_yolo_info.configFilePath = _config.file_model_cfg;
 		_yolo_info.wtsFilePath = _config.file_model_weights;
-		_yolo_info.precision = _vec_precision[_config.inference_precison];
+		_yolo_info.precision = _vec_precision[EnumToIdx(_config.inference_precison)];
 		_yolo_info.deviceType = "kGPU";
 		auto npos = _yolo_info.wtsFilePath.find(".weights");
 		assert(npos != std::string::npos
@@ -118,19 +144,19 @@ private:
 
 	void build_net()
 	{
-		if ((_config.net_type == YOLOV2) || (_config.net_type == YOLOV2_TINY))
+		if ((_config.net_type == ModelType::YOLOV2) || (_config.net_type == ModelType::YOLOV2_TINY))
 		{
 			_p_net = std::unique_ptr<Yolo>{ new YoloV2( _yolo_info, _infer_param) };
 		}
-		else if ((_config.net_type == YOLOV3) || (_config.net_type == YOLOV3_TINY))
+		else if ((_config.net_type == ModelType::YOLOV3) || (_config.net_type == ModelType::YOLOV3_TINY))
 		{
 			_p_net = std::unique_ptr<Yolo>{ new YoloV3(_yolo_info, _infer_param) };
 		}
-		else if( (_config.net_type == YOLOV4) || (_config.net_type == YOLOV4_TINY))
+		else if( (_config.net_type == ModelType::YOLOV4) || (_config.net_type == ModelType::YOLOV4_TINY))
 		{
 			_p_net = std::unique_ptr<Yolo>{ new YoloV4(_yolo_info,_infer_param) };
 		}
-		else if (_config.net_type == YOLOV5)
+		else if (_config.net_type == ModelType::YOLOV5)
 		{
 			_p_net = std::unique_ptr<Yolo>{ new YoloV5(_yolo_info,_infer_param) };
 		}
