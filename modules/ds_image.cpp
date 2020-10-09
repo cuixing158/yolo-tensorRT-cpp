@@ -98,7 +98,7 @@ DsImage::DsImage(const std::string& path, const int& inputH, const int& inputW) 
     m_ImageName()
 {
     m_ImageName = std::experimental::filesystem::path(path).stem().string();
-	m_OrigImage = cv::imread(path, cv::IMREAD_UNCHANGED);
+	m_OrigImage = cv::imread(path, cv::IMREAD_COLOR);
 
     if (!m_OrigImage.data || m_OrigImage.cols <= 0 || m_OrigImage.rows <= 0)
     {

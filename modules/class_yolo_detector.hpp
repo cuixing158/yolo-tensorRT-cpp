@@ -137,7 +137,7 @@ private:
 		_infer_param.printPerfInfo = false;
 		_infer_param.printPredictionInfo = false;
 		_infer_param.calibImages = _config.calibration_image_list_file_txt; // txt文本路径文件，里面每行保存一副校验图像路径
-		_infer_param.calibImagesPath = ""; // 作用?
+		_infer_param.calibImagesPath = ""; // txt文本路径文件的前缀目录
 		_infer_param.probThresh = _config.detect_thresh; // 默认为0.9，见结构体定义
 		_infer_param.nmsThresh = 0.5;
 	}

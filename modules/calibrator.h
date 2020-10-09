@@ -46,7 +46,7 @@ public:
 
 private:
     const uint32_t m_BatchSize;
-    const uint32_t m_InputH;
+    const uint32_t m_InputH; // 从cfg文件中传入的width,height，校订图像都是使用该大小的
     const uint32_t m_InputW;
     const uint64_t m_InputSize;
     const uint64_t m_InputCount;
@@ -55,8 +55,8 @@ private:
     uint32_t m_ImageIndex;
     bool m_ReadCache{true};
     void* m_DeviceInput{nullptr};
-    std::vector<std::string> m_ImageList;
-    std::vector<char> m_CalibrationCache;
+    std::vector<std::string> m_ImageList;//存储所有校订图像的绝对路径
+    std::vector<char> m_CalibrationCache; // table文件的校准二进制数据流
 };
 
 #endif

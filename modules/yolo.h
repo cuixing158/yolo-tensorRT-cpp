@@ -125,7 +125,7 @@ protected:
     const std::string m_ConfigFilePath;
     const std::string m_WtsFilePath;
     const std::string m_LabelsFilePath;
-    const std::string m_Precision;
+    const std::string m_Precision; // 传入的 "kINT8","kHALF","kFLOAT"中的一个，字符串类型，_vec_precision 
     const std::string m_DeviceType;
     const std::string m_CalibImages; // 实际传进来的为校订图像路径文本文件
     const std::string m_CalibImagesFilePath;// 为传经来的前缀，在calibrator.cpp中Int8EntropyCalibrator（）用到，目前为"" 

@@ -59,7 +59,7 @@ private:
     // unaltered original Image
     cv::Mat m_OrigImage;
     // letterboxed Image given to the network as input
-    cv::Mat m_LetterboxImage;
+    cv::Mat m_LetterboxImage;// RGB, [0,255]Í¼Ïñ
     // final image marked with the bounding boxes
     cv::Mat m_MarkedImage;
 };

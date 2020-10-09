@@ -11,15 +11,15 @@ REGISTER_TENSORRT_PLUGIN(DetectPluginCreator);
 
 Yolo::Yolo( const NetworkInfo& networkInfo, const InferParams& inferParams) :
 	m_NetworkType(networkInfo.networkType),// class_yolo_detector.hpp定义，字符串类型
-	m_ConfigFilePath(networkInfo.configFilePath),
-	m_WtsFilePath(networkInfo.wtsFilePath),
+	m_ConfigFilePath(networkInfo.configFilePath),// cfg文件
+	m_WtsFilePath(networkInfo.wtsFilePath),// weights文件
 	m_LabelsFilePath(networkInfo.labelsFilePath),
-	m_Precision(networkInfo.precision),
+	m_Precision(networkInfo.precision),// 传入的 "kINT8","kHALF","kFLOAT"中的一个，字符串类型，_vec_precision
 	m_DeviceType(networkInfo.deviceType),
 	m_CalibTableFilePath(networkInfo.calibrationTablePath),// 比如 E:/allModel/yolov4-calibration.table
-	m_InputBlobName(networkInfo.inputBlobName),
+	m_InputBlobName(networkInfo.inputBlobName),// 传入进来始终未字符串"data"
 	m_CalibImages(inferParams.calibImages), // 实际传进来的为校订图像路径文本文件
-	m_CalibImagesFilePath(inferParams.calibImagesPath),
+	m_CalibImagesFilePath(inferParams.calibImagesPath), // 前缀目录
 	m_ProbThresh(inferParams.probThresh),
 	m_NMSThresh(inferParams.nmsThresh),
 	m_PrintPerfInfo(inferParams.printPerfInfo),
@@ -66,8 +66,8 @@ Yolo::Yolo( const NetworkInfo& networkInfo, const InferParams& inferParams) :
 	}
 	else if (m_Precision == "kINT8")
 	{
-		Int8EntropyCalibrator calibrator(m_BatchSize, m_CalibImages, m_CalibImagesFilePath,
-			m_CalibTableFilePath, m_InputSize, m_InputH, m_InputW,
+		Int8EntropyCalibrator calibrator(m_BatchSize, m_CalibImages, m_CalibImagesFilePath, // m_BatchSize为cfg文件中定义的batch ,m_CalibImages为传入进来的校订文本
+			m_CalibTableFilePath, m_InputSize, m_InputH, m_InputW, // m_InputSize为输入一副图像的像素个数
 			m_InputBlobName);
 		
 		if ("yolov5" == m_NetworkType)
