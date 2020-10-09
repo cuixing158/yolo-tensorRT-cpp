@@ -1,13 +1,9 @@
+**本项目工程属于tensorRT yolov3/v4/v5 C++量化版本！**
+> 本工程含有2个项目，一个用于dll_detector产生dll或者so库文件，另一个为测试库文件的项目
 2020.9.27记录：tensorRT量化进度，审阅代码到calibrator流程，是定义Int8EntropyCalibrator 继承tensorRT库下的 public nvinfer1::IInt8EntropyCalibrator，重写calibrator类.明天需要完成自己的球员网球检测器在量化后的表现<br>
 2020.9.28记录：量化了网球球员检测模型，速度10ms一帧，320×320，速度并未提高？校准表是中间生成？
 
-# Yolov5 Yolov4 Yolov3 TensorRT Implementation
 
-![GitHub stars](https://img.shields.io/github/stars/enazoe/yolo-tensorrt) ![GitHub forks](https://img.shields.io/github/forks/enazoe/yolo-tensorrt)  ![GitHub watchers](https://img.shields.io/github/watchers/enazoe/yolo-tensorrt)  [![Gitter](https://badges.gitter.im/yolo-tensorrt/community.svg)](https://gitter.im/yolo-tensorrt/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-
-__news:__ yolov5 support
-
-![](./configs/result.jpg)
 ## INTRODUCTION
 
 The project is the encapsulation  of nvidia official yolo-tensorrt [implementation](https://github.com/NVIDIA-AI-IOT/deepstream_reference_apps). And you must have the trained yolo model(__.weights__) and __.cfg__ file from the darknet (yolov3 & yolov4). For the [yolov5](https://github.com/ultralytics/yolov5) ,you should prepare the model file (yolov5s.yaml) and the trained weight file (yolov5s.pt) from pytorch.
@@ -51,12 +47,12 @@ std::vector<BatchResult> res;
 detector.detect(vec_image, res)
 ```
 
-## Build and use yolo-trt as DLL or SO libraries
+
 
 
 ### windows10
-
-- dependency : TensorRT 7.1.3.4  , cuda 11.0 , cudnn 8.0  , opencv4 , vs2015
+- cuda环境dependency：tensorRT,cuda,cudnn版本要对应，TensorRT6.0.1.5+cuda10.1+cudnn7.6.4.38 或者 TensorRT 7.1.3.4 +cuda 11.0 + cudnn 8.0 
+- 软件环境dependency : opencv4 , vs2015或其他版本
 - build:
   
     open MSVC _sln/sln.sln_ file 
@@ -120,14 +116,11 @@ private:
 
 ## REFERENCE
 
+- https://github.com/enazoe/yolo-tensorrt
 - https://github.com/wang-xinyu/tensorrtx/tree/master/yolov4
 - https://github.com/mj8ac/trt-yolo-app_win64
 - https://github.com/NVIDIA-AI-IOT/deepstream_reference_apps
 
-## Contact
 
-qq group id: 1151955802
-
-<img src="./configs/qq_group.png" style="zoom:50%;" />
 
 

@@ -67,7 +67,7 @@ int main()
 		cv::Mat temp0 = cv::imread(vecImgs[i]);
 		cv::Mat temp1 = image1.clone();
 		batch_img.push_back(temp0);
-//		batch_img.push_back(temp1);
+		batch_img.push_back(temp1);
 
 		//detect
 		timer.reset();
