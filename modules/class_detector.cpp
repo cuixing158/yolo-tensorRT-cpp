@@ -30,7 +30,7 @@ void Detector::init(const Config &config)
 	_impl->_detector.init(config);
 }
 
-void Detector::detect(const std::vector<cv::Mat> &mat_image, std::vector<BatchResult> &vec_batch_result)
+void Detector::detect(const std::vector<cv::Mat> &mat_image, std::vector<BatchResult> &vec_batch_result,bool isuseOurmodel)
 {
-	_impl->_detector.detect(mat_image, vec_batch_result);
+	_impl->_detector.detect(mat_image, vec_batch_result, isuseOurmodel);
 }

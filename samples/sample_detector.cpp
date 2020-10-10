@@ -34,7 +34,7 @@ int main()
 	config_v4_tiny.file_model_cfg = "../configs/yolov4-tiny.cfg";
 	config_v4_tiny.file_model_weights = "E:/allModel/yolov4-tiny.weights";
 	config_v4_tiny.calibration_image_list_file_txt = "../configs/calibration_images.txt";
-	config_v4_tiny.inference_precison = Precision::INT8;
+	config_v4_tiny.inference_precison = Precision::FP32;
 
 	Config config_v5;
 	config_v5.net_type = ModelType::YOLOV5;
@@ -52,12 +52,13 @@ int main()
 	myconfig_v4.inference_precison = Precision::INT8;
 
 	std::unique_ptr<Detector> detector(new Detector());
-	detector->init(config_v4_tiny);
+	detector->init(myconfig_v4);
+	bool isuseOurmodel = true;
 	cv::Mat image0 = cv::imread("../configs/dog.jpg", cv::IMREAD_COLOR);
 	cv::Mat image1 = cv::imread("../configs/person.jpg", cv::IMREAD_COLOR);
 	std::vector<BatchResult> batch_res;
 	std::vector<std::string> vecImgs;
-	CmFile::GetImageFromFolderAndSub("E:/sportsBallPlayerBase/no_detect_person", vecImgs,".*g");
+	CmFile::GetImageFromFolderAndSub("E:/sportsBallPlayerBase/no_detect_person", vecImgs,".*g"); // "E:/coco2014/train2014/train2014/train2014"
 
 	Timer timer;
 	for (size_t i = 0 ;i<vecImgs.size();i++)
@@ -67,11 +68,11 @@ int main()
 		cv::Mat temp0 = cv::imread(vecImgs[i]);
 		cv::Mat temp1 = image1.clone();
 		batch_img.push_back(temp0);
-		batch_img.push_back(temp1);
+		//batch_img.push_back(image1);
 
 		//detect
 		timer.reset();
-		detector->detect(batch_img, batch_res);
+		detector->detect(batch_img, batch_res, isuseOurmodel);
 		timer.out("detect");
 
 		//disp

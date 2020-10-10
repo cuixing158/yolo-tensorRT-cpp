@@ -1,20 +1,20 @@
 **本项目工程属于tensorRT yolov3/v4/v5 C++量化版本！**
-> 本工程含有2个项目，一个用于dll_detector产生dll或者so库文件，另一个为测试库文件的项目
-2020.9.27记录：tensorRT量化进度，审阅代码到calibrator流程，是定义Int8EntropyCalibrator 继承tensorRT库下的 public nvinfer1::IInt8EntropyCalibrator，重写calibrator类.明天需要完成自己的球员网球检测器在量化后的表现<br>
-2020.9.28记录：量化了网球球员检测模型，速度10ms一帧，320×320，速度并未提高？校准表是中间生成？
-
-2020.10.9 记录：弄清楚量化接口的调用过程，以便于部署其他模型的推理量化。
+## OverView
+本工程含有2个项目，一个用于dll_detector产生dll或者so库文件，另一个为测试库文件的项目,yolov3/v4需要事先准备cfg,weights文件， [yolov5](https://github.com/ultralytics/yolov5 )需要事先准备yolov5s.yaml和yolov5s.pt文件。适合windows10,ubuntu,嵌入式jetson环境部署。<br>
 
 ## TensorRT 量化流程
- 工作原理为：先判断是否有校订table文件存在，有的话直接读取，没有就对data/目录下的图像进行calibrate生成table，先调用函数readCalibrationCache,然后getBatch,最后writeCalibrationCache，getBatch()在校验过程中
- 调用多次，其他函数调用一次。
+ 量化工作原理为：先判断是否有校订table文件存在，有的话直接读取，没有就对data/目录下的图像进行calibrate生成table，先调用函数readCalibrationCache,然后getBatch,最后writeCalibrationCache，getBatch()在校验过程中
+ 调用多次，其他函数调用一次。所有模型文件都转换为cfg,weights,解析是使用tensorRT C++ 自定义的API。
+ 
+ 
+## 更新记录
+2020.9.27记录：tensorRT量化进度，审阅代码到calibrator流程，是定义Int8EntropyCalibrator 继承tensorRT库下的 public nvinfer1::IInt8EntropyCalibrator，重写calibrator类.明天需要完成自己的球员网球检测器在量化后的表现<br>
+2020.9.28记录：量化了网球球员检测模型，速度10ms一帧，320×320，速度并未提高？校准表是中间生成？<br>
+2020.10.9 记录：弄清楚量化接口的调用过程，以便于部署其他模型的推理量化。在PC上测评tensorRT性能结果见[此项目](https://github.com/cuixing158/yolov3-yolov4) <br>
+2020.10.10记录：项目中使用engine推理图像大小是在cfg文件中定义的width,height进行的，而非实际输入图像大小。
 
-## INTRODUCTION
-
-The project is the encapsulation  of nvidia official yolo-tensorrt [implementation](https://github.com/NVIDIA-AI-IOT/deepstream_reference_apps). And you must have the trained yolo model(__.weights__) and __.cfg__ file from the darknet (yolov3 & yolov4). For the [yolov5](https://github.com/ultralytics/yolov5) ,you should prepare the model file (yolov5s.yaml) and the trained weight file (yolov5s.pt) from pytorch.
 
 ![](./configs/yolo-trt.png)
-
 - [x] yolov5s , yolov5m , yolov5l , yolov5x [tutorial](yolov5_tutorial.md)
 - [x] yolov4 , yolov4-tiny
 - [x] yolov3 , yolov3-tiny
@@ -51,8 +51,6 @@ Config config;
 std::vector<BatchResult> res;
 detector.detect(vec_image, res)
 ```
-
-
 
 
 ### windows10

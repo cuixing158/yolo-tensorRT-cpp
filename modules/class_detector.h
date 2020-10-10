@@ -60,7 +60,7 @@ public:
 
 	void init(const Config &config);
 
-	void detect(const std::vector<cv::Mat> &mat_image, std::vector<BatchResult> &vec_batch_result);
+	void detect(const std::vector<cv::Mat> &mat_image, std::vector<BatchResult> &vec_batch_result,bool isuseOurmodel=false);
 
 private:
 	

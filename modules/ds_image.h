@@ -46,8 +46,8 @@ public:
     std::string exportJson() const;
 
 private:
-    int m_Height;
-    int m_Width;
+    int m_Height;// 输入原始图像的高
+    int m_Width;// 输入原始图像的宽
     int m_XOffset;
     int m_YOffset;
     float m_ScalingFactor;

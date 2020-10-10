@@ -30,7 +30,7 @@ public:
 
 	}
 
-	void init(const Config &config)
+	void init(const Config &config)//完成校订工作
 	{
 		_config = config;
 
@@ -42,7 +42,7 @@ public:
 	}
 
 	void detect(const std::vector<cv::Mat>	&vec_image,
-				std::vector<BatchResult> &vec_batch_result)
+				std::vector<BatchResult> &vec_batch_result,bool isUseOurModel)
 	{
 		std::vector<DsImage> vec_ds_images;
 		vec_batch_result.clear();
@@ -71,10 +71,22 @@ public:
 				Result res;
 				res.id = b.label;
 				res.prob = b.prob;
-				const int x = b.box.x1;
-				const int y = b.box.y1;
-				const int w = b.box.x2 - b.box.x1;
-				const int h = b.box.y2 - b.box.y1;
+				int x, y, w, h;
+				if (isUseOurModel)
+				{
+					w = b.box.x2 - b.box.x1;
+					h = b.box.y2 - b.box.y1;
+					x = b.box.x1+w/2;
+					y = b.box.y1+h/2;
+				}
+				else
+				{
+					x = b.box.x1;
+					y = b.box.y1;
+					w = b.box.x2 - b.box.x1;
+				    h = b.box.y2 - b.box.y1;
+				}
+				
 				res.rect = cv::Rect(x, y, w, h);
 				vec_result.push_back(res);
 			}

@@ -370,7 +370,6 @@ void Yolo::createYOLOEngine(const nvinfer1::DataType dataType, Int8EntropyCalibr
 					channels = getNumChannels(tensorOutputs[idx]);
 					tensorOutputs.push_back(tensorOutputs[idx]);
 					printLayerInfo(layerIndex, "route", "        -", outputVol, std::to_string(weightPtr));
-
 				}
 				//yolov4-tiny route split layer
 				else
@@ -920,12 +919,12 @@ void Yolo::doInference(const unsigned char* input, const uint32_t batchSize)
 {
 	//Timer timer;
     assert(batchSize <= m_BatchSize && "Image batch size exceeds TRT engines batch size");
-    NV_CUDA_CHECK(cudaMemcpyAsync(m_DeviceBuffers.at(m_InputBindingIndex), input,
+    NV_CUDA_CHECK(cudaMemcpyAsync(m_DeviceBuffers.at(m_InputBindingIndex), input,  // 在推理之前，把数据从cpu搬运到cuda
                                   batchSize * m_InputSize * sizeof(float), cudaMemcpyHostToDevice,
                                   m_CudaStream));
 	
-    m_Context->enqueue(batchSize, m_DeviceBuffers.data(), m_CudaStream, nullptr);
-    for (auto& tensor : m_OutputTensors)
+    m_Context->enqueue(batchSize, m_DeviceBuffers.data(), m_CudaStream, nullptr); // 网络推理
+    for (auto& tensor : m_OutputTensors)// 在此类初始化过程中，m_OutputTensors结构体类型已经进行了定义,把yolo结果从cuda搬运到cpu
     {
         NV_CUDA_CHECK(cudaMemcpyAsync(tensor.hostBuffer, m_DeviceBuffers.at(tensor.bindingIndex),
                                       batchSize * tensor.volume * sizeof(float),
