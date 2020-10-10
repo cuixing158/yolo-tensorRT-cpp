@@ -1,6 +1,6 @@
 **本项目工程属于tensorRT yolov3/v4/v5 C++量化版本！**
 ## OverView
-本工程含有2个项目，一个用于dll_detector产生dll或者so库文件，另一个为测试库文件的项目,yolov3/v4需要事先准备cfg,weights文件， [yolov5](https://github.com/ultralytics/yolov5 )需要事先准备yolov5s.yaml和yolov5s.pt文件。适合windows10,ubuntu,嵌入式jetson环境部署。<br>
+本工程含有2个项目，一个用于dll_detector产生dll或者so库文件，另一个为测试库文件的项目,yolov3/v4需要事先准备cfg,weights文件， [yolov5](https://github.com/ultralytics/yolov5 )需要事先准备yolov5s.yaml和yolov5s.pt文件。C++代码组织非常好，可以学习参考，另外关于tensorRT的量化过程也不错。此库非常适合windows10,ubuntu,嵌入式jetson环境部署。<br>
 
 ## TensorRT 量化流程
  量化工作原理为：先判断是否有校订table文件存在，有的话直接读取，没有就对data/目录下的图像进行calibrate生成table，先调用函数readCalibrationCache,然后getBatch,最后writeCalibrationCache，getBatch()在校验过程中
@@ -11,7 +11,7 @@
 2020.9.27记录：tensorRT量化进度，审阅代码到calibrator流程，是定义Int8EntropyCalibrator 继承tensorRT库下的 public nvinfer1::IInt8EntropyCalibrator，重写calibrator类.明天需要完成自己的球员网球检测器在量化后的表现<br>
 2020.9.28记录：量化了网球球员检测模型，速度10ms一帧，320×320，速度并未提高？校准表是中间生成？<br>
 2020.10.9 记录：弄清楚量化接口的调用过程，以便于部署其他模型的推理量化。在PC上测评tensorRT性能结果见[此项目](https://github.com/cuixing158/yolov3-yolov4) <br>
-2020.10.10记录：项目中使用engine推理图像大小是在cfg文件中定义的width,height进行的，而非实际输入图像大小。
+2020.10.10记录：项目中使用engine推理图像大小是在cfg文件中定义的width,height进行的，而非实际输入图像大小。暂时终止此项目，改用onnxruntime进行推理，因为onnxruntime已经集成了tensorRT推理引擎。<br>
 
 
 ![](./configs/yolo-trt.png)
