@@ -26,20 +26,6 @@
 - [x] support FP32,FP16,INT8
 - [ ] daynamic input size
 
-
-## PLATFORM & PERFORMENCE
-
-- [x] windows 10
-- [x] ubuntu 18.04
-- [x] L4T (Jetson platform)
-
-|     model      |             gpu              | precision | detect time(with pre and post process) |
-| :------------: | :--------------------------: | :-------: | :------------------------------------: |
-| yolov3-416x416 |      jetson nano (15w)       |   FP16    |                 250ms                  |
-| yolov3-416x416 | jetson xavier nx (15w 6core) |   FP32    |                 120ms                  |
-| yolov3-416x416 | jetson xavier nx (15w 6core) |   FP16    |                  45ms                  |
-| yolov3-416x416 | jetson xavier nx (15w 6core) |   INT8    |                  35ms                  |
-
 ## WRAPPER
 
 Prepare the pretrained __.weights__ and __.cfg__ model. 

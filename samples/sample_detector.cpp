@@ -49,7 +49,7 @@ int main()
 	myconfig_v4.file_model_cfg = "D:/VS_2015_work/ActivityRecognitionCom/ActivityRecognitionCom/model/person_ball_detect.cfg";
 	myconfig_v4.file_model_weights = "D:/VS_2015_work/ActivityRecognitionCom/ActivityRecognitionCom/model/person_ball_detect.weights";
 	myconfig_v4.calibration_image_list_file_txt = "../configs/calibration_images.txt";
-	myconfig_v4.inference_precison = Precision::INT8;
+	myconfig_v4.inference_precison = Precision::FP32;
 
 	std::unique_ptr<Detector> detector(new Detector());
 	detector->init(myconfig_v4);
@@ -58,7 +58,7 @@ int main()
 	cv::Mat image1 = cv::imread("../configs/person.jpg", cv::IMREAD_COLOR);
 	std::vector<BatchResult> batch_res;
 	std::vector<std::string> vecImgs;
-	CmFile::GetImageFromFolderAndSub("E:/sportsBallPlayerBase/no_detect_person", vecImgs,".*g"); // "E:/coco2014/train2014/train2014/train2014"
+	CmFile::GetImageFromFolderAndSub("E:/sportsBallPlayerBase/test", vecImgs,".*g"); // "E:/coco2014/train2014/train2014/train2014"  "E:/sportsBallPlayerBase/no_detect_person"
 
 	Timer timer;
 	for (size_t i = 0 ;i<vecImgs.size();i++)

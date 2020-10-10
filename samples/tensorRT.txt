@@ -1,0 +1,102 @@
+// How to deploy an ONNX model with int8 calibration?
+// 参考：https://github.com/NVIDIA/TensorRT/issues/557
+
+std::vector<float> prepareImage(cv::Mat& img) {
+    int c = 3;
+    int h = 300;   //net h
+    int w = 300;   //net w
+
+    auto scaleSize = cv::Size(h, w);
+
+    cv::Mat resized;
+    cv::resize(img, resized, scaleSize, 0, 0, cv::INTER_CUBIC);
+
+    cv::Mat img_float;
+
+    resized.convertTo(img_float, CV_32FC3, 0.00784314, -1.0);
+
+
+    //HWC TO CHW
+    std::vector<cv::Mat> input_channels(c);
+    cv::split(img_float, input_channels);
+
+    std::vector<float> result(h * w * c);
+    auto data = result.data();
+    int channelLength = h * w;
+    for (int i = 0; i < c; ++i) {
+        memcpy(data, input_channels[i].data, channelLength * sizeof(float));
+        data += channelLength;
+    }
+    return result;
+}
+
+
+
+int8EntroyCalibrator::int8EntroyCalibrator(const int &bacthSize, const std::string &imgPath,
+    const std::string &calibTablePath) :batchSize(bacthSize), calibTablePath(calibTablePath), imageIndex(0), forwardFace(
+        false) {
+    int inputChannel = 3;
+    int inputH = 300;
+    int inputW = 300;
+    inputCount = bacthSize*inputChannel*inputH*inputW;
+    std::fstream f(imgPath);
+    if (f.is_open()) {
+        std::string temp;
+        while (std::getline(f, temp)) imgPaths.push_back(temp);
+    }
+    int len = imgPaths.size();
+    for (int i = 0; i < len; i++) {
+        cout << imgPaths[i] << endl;
+    }
+    batchData = new float[inputCount];
+    CHECK(cudaMalloc(&deviceInput, inputCount * sizeof(float)));
+}
+
+int8EntroyCalibrator::~int8EntroyCalibrator() {
+    CHECK(cudaFree(deviceInput));
+    if (batchData)
+        delete[] batchData;
+}
+
+bool int8EntroyCalibrator::getBatch(void **bindings, const char **names, int nbBindings) {
+    cout << imageIndex << " " << batchSize << endl;
+    cout << imgPaths.size() << endl;
+    if (imageIndex + batchSize > int(imgPaths.size()))
+        return false;
+    // load batch
+    float* ptr = batchData;
+    for (size_t j = imageIndex; j < imageIndex + batchSize; ++j)
+    {
+        //cout << imgPaths[j] << endl;
+        cv::Mat img = cv::imread(imgPaths[j]);
+        std::vector<float>inputData = prepareImage(img);
+
+        int len = (int)(inputData.size());
+        memcpy(ptr, inputData.data(), len * sizeof(float));
+
+        ptr += inputData.size();
+        std::cout << "load image " << imgPaths[j] << "  " << (j + 1)*100. / imgPaths.size() << "%" << std::endl;
+    }
+    imageIndex += batchSize;
+    CHECK(cudaMemcpy(deviceInput, batchData, inputCount * sizeof(float), cudaMemcpyHostToDevice));
+    bindings[0] = deviceInput;
+    return true;
+}
+const void* int8EntroyCalibrator::readCalibrationCache(std::size_t &length)
+{
+    calibrationCache.clear();
+    std::ifstream input(calibTablePath, std::ios::binary);
+    input >> std::noskipws;
+    if (readCache && input.good())
+        std::copy(std::istream_iterator<char>(input), std::istream_iterator<char>(),
+            std::back_inserter(calibrationCache));
+
+    length = calibrationCache.size();
+    return length ? &calibrationCache[0] : nullptr;
+}
+
+void int8EntroyCalibrator::writeCalibrationCache(const void *cache, std::size_t length)
+{
+    std::ofstream output(calibTablePath, std::ios::binary);
+    output.write(reinterpret_cast<const char*>(cache), length);
+}
