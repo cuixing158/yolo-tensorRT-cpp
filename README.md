@@ -41,12 +41,14 @@ detector.detect(vec_image, res)
 
 ### windows10
 - cuda环境dependency：tensorRT,cuda,cudnn版本要对应，TensorRT6.0.1.5+cuda10.1+cudnn7.6.4.38 或者 TensorRT 7.1.3.4 +cuda 11.0 + cudnn 8.0 
+
 - 软件环境dependency : opencv4 , vs2015或其他版本
 - build:
   
     open MSVC _sln/sln.sln_ file 
     - dll project : the trt yolo detector dll
     - demo project : test of the dll
+![图片](configs/config.jpg)<br>
 
 ### ubuntu & L4T (jetson)
 
