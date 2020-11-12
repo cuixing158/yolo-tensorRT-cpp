@@ -12,7 +12,8 @@
 2020.9.28记录：量化了网球球员检测模型，速度10ms一帧，320×320，速度并未提高？校准表是中间生成？<br>
 2020.10.9 记录：弄清楚量化接口的调用过程，以便于部署其他模型的推理量化。在PC上测评tensorRT性能结果见[此项目](https://github.com/cuixing158/yolov3-yolov4) <br>
 2020.10.10记录：项目中使用engine推理图像大小是在cfg文件中定义的width,height进行的，而非实际输入图像大小。暂时终止此项目，改用onnxruntime进行推理，因为onnxruntime已经[集成了tensorRT推理引擎](https://github.com/microsoft/onnxruntime/blob/master/docs/execution_providers/TensorRT-ExecutionProvider.md)或者[onnx-tensorrt](https://github.com/onnx/onnx-tensorrt)<br>
-或移步到我的[insightface量化部分](https://github.com/cuixing158/InsightFace_Pytorch)
+或移步到我的[face_jetson_pytorch](https://github.com/cuixing158/face_jetson_pytorch )<br>
+2020.11.11记录：量化部分仍旧回到本库C++ TensorRT模式！环境定向为cuda10.2+cudnn7.4.1+vs2019
 
 ![](./configs/yolo-trt.png)
 - [x] yolov5s , yolov5m , yolov5l , yolov5x [tutorial](yolov5_tutorial.md)
@@ -41,6 +42,7 @@ detector.detect(vec_image, res)
 
 ### windows10
 - cuda环境dependency：tensorRT,cuda,cudnn版本要对应，TensorRT6.0.1.5+cuda10.1+cudnn7.6.4.38 或者 TensorRT 7.1.3.4 +cuda 11.0 + cudnn 8.0 
+或者 TensorRT7.0+cuda10.2+cudnn7.6.4.38 
 
 - 软件环境dependency : opencv4 , vs2015或其他版本
 - build:

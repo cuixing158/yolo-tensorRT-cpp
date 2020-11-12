@@ -17,13 +17,13 @@ Yolo::Yolo( const NetworkInfo& networkInfo, const InferParams& inferParams) :
 	m_Precision(networkInfo.precision),// 传入的 "kINT8","kHALF","kFLOAT"中的一个，字符串类型，_vec_precision
 	m_DeviceType(networkInfo.deviceType),
 	m_CalibTableFilePath(networkInfo.calibrationTablePath),// 比如 E:/allModel/yolov4-calibration.table
-	m_InputBlobName(networkInfo.inputBlobName),// 传入进来始终未字符串"data"
+	m_InputBlobName(networkInfo.inputBlobName),// 传入进来始终为字符串"data"
 	m_CalibImages(inferParams.calibImages), // 实际传进来的为校订图像路径文本文件
 	m_CalibImagesFilePath(inferParams.calibImagesPath), // 前缀目录
 	m_ProbThresh(inferParams.probThresh),
 	m_NMSThresh(inferParams.nmsThresh),
-	m_PrintPerfInfo(inferParams.printPerfInfo),
-	m_PrintPredictions(inferParams.printPredictionInfo),
+	m_PrintPerfInfo(inferParams.printPerfInfo), // 是否打印性能信息
+	m_PrintPredictions(inferParams.printPredictionInfo), // 是否打印预测信息
 	m_InputH(0),
 	m_InputW(0),
 	m_InputC(0),
@@ -64,7 +64,7 @@ Yolo::Yolo( const NetworkInfo& networkInfo, const InferParams& inferParams) :
 			createYOLOEngine();
 		}
 	}
-	else if (m_Precision == "kINT8")
+	else if (m_Precision == "kINT8") // 计算能力达到6.1才可以Int8量化
 	{
 		Int8EntropyCalibrator calibrator(m_BatchSize, m_CalibImages, m_CalibImagesFilePath, // m_BatchSize为cfg文件中定义的batch ,m_CalibImages为传入进来的校订文本
 			m_CalibTableFilePath, m_InputSize, m_InputH, m_InputW, // m_InputSize为输入一副图像的像素个数
@@ -953,7 +953,7 @@ std::vector<std::map<std::string, std::string>> Yolo::parseConfigFile(const std:
     std::ifstream file(cfgFilePath);
     assert(file.good());
     std::string line;
-    std::vector<std::map<std::string, std::string>> blocks;
+    std::vector<std::map<std::string, std::string>> blocks; // 存储每个block的key,value值
     std::map<std::string, std::string> block;
 
     while (getline(file, line))
@@ -1072,7 +1072,7 @@ void Yolo::parseConfigBlocks()
                     m_ClassNames.push_back(std::to_string(i));
                 }
             }
-			outputTensor.blobName = "yolo_" + std::to_string(_n_yolo_ind);
+			outputTensor.blobName = "yolo_" + std::to_string(_n_yolo_ind); // _n_yolo_ind在定义时候先初始化为0
 			outputTensor.gridSize = (m_InputH / 32) * pow(2, _n_yolo_ind); // 32为特征图的下采样率
 			outputTensor.grid_h = (m_InputH / 32) * pow(2, _n_yolo_ind);
 			outputTensor.grid_w = (m_InputW / 32) * pow(2, _n_yolo_ind);

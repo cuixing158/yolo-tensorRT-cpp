@@ -2,7 +2,6 @@
 #include <thread>
 #include "class_timer.hpp"
 #include "class_detector.h"
-
 #include "../CmFile/CmFile.h"
 
 int main()
@@ -49,7 +48,7 @@ int main()
 	myconfig_v4.file_model_cfg = "D:/VS_2015_work/ActivityRecognitionCom/ActivityRecognitionCom/model/person_ball_detect.cfg";
 	myconfig_v4.file_model_weights = "D:/VS_2015_work/ActivityRecognitionCom/ActivityRecognitionCom/model/person_ball_detect.weights";
 	myconfig_v4.calibration_image_list_file_txt = "../configs/calibration_images.txt";
-	myconfig_v4.inference_precison = Precision::FP32;
+	myconfig_v4.inference_precison = Precision::INT8;
 
 	std::unique_ptr<Detector> detector(new Detector());
 	detector->init(myconfig_v4);

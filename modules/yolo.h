@@ -72,7 +72,7 @@ struct InferParams
     bool printPerfInfo;
     bool printPredictionInfo;
     std::string calibImages; // txt文本路径文件，里面每行保存一副校验图像路径
-    std::string calibImagesPath; // 作用?
+    std::string calibImagesPath; // txt文本路径文件的前缀目录
     float probThresh;
     float nmsThresh;
 };
@@ -92,8 +92,8 @@ struct TensorInfo
     uint32_t numClasses{0};// 总的类别数量，比如yolov3/v4共80类别
     uint32_t numBBoxes{0}; // yolov3/v4层的mask数量，yolov2的anchors数量，大小为N，见parseConfigBlocks（）
     uint64_t volume{0}; // 当前特征图的输出bs*na*h*w*(5+nc)的数量，其中bs大小来自于cfg文件中的batch
-    std::vector<uint32_t> masks; // anchors，w*h形式，大小为2N
-    std::vector<float> anchors;
+    std::vector<uint32_t> masks; // masks,依次存储cfg中的masks
+    std::vector<float> anchors;// anchors，依次存储cfg文件中的anchors
     int bindingIndex{-1};
     float* hostBuffer{nullptr};// 输出的tensor数据,多维数组,该类初始化会调用parseConfigBlocks（），然后此变量初始化
 };
@@ -119,7 +119,7 @@ public:
     virtual ~Yolo();
 
 protected:
-    Yolo( const NetworkInfo& networkInfo, const InferParams& inferParams);
+    Yolo( const NetworkInfo& networkInfo, const InferParams& inferParams); // 具体到初始化某个yolo类型时候，比如初始化一个yolov4对象时候，子类开始调用父类方法
     std::string m_EnginePath;
     const std::string m_NetworkType;// class_detector.h中定义的YOLOV2，YOLOV2_TINY，...
     const std::string m_ConfigFilePath;
