@@ -24,4 +24,6 @@ api/
 *.pt
 *.onnx
 .ipynb_checkpoints
+*.vcxproj
 ./sln/
+

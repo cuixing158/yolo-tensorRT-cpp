@@ -107,12 +107,47 @@ private:
 };
 ```
 
+## 关于量化的一些原理知识
+对于任意一个实数，量化为整数类型，省略bias，计算公式如下：<br>
+RealWorldValue = StoredInteger ✕ 2^(−FractionLength) <br>
+在matlab中使用定点计算可以表述上式，例如pi，可以用以下代码量化其值：<br>
+```matlab
+ntBP = numerictype(1,8,4);% 定义一种有符号8位并小数位占4位的符号位对象类型
+x_BP = fi(pi,true,8) % 有符号8位定点数,小数位长度由软件自动推算
+pi_cal = double(x_BP.storedInteger)*2^(-x_BP.FractionLength)+x_BP.Bias % 验证量化公式
+
+yBP1 = quantize(x_BP,ntBP) % 指定x_BP为ntBP类型
+```
+output:<br>
+```text
+x_BP = 
+   3.156250000000000
+
+          DataTypeMode: Fixed-point: binary point scaling
+            Signedness: Signed
+            WordLength: 8
+        FractionLength: 5
+pi_cal =
+   3.156250000000000
+yBP1 = 
+   3.125000000000000
+
+          DataTypeMode: Fixed-point: binary point scaling
+            Signedness: Signed
+            WordLength: 8
+        FractionLength: 4
+```
+
+
+
 ## REFERENCE
 
 - https://github.com/enazoe/yolo-tensorrt
-- https://github.com/wang-xinyu/tensorrtx/tree/master/yolov4
+- [tensorRTX库重点](https://github.com/wang-xinyu/tensorrtx/tree/master/yolov4 )
 - https://github.com/mj8ac/trt-yolo-app_win64
 - https://github.com/NVIDIA-AI-IOT/deepstream_reference_apps
+- [matlab量化背景1](https://www.mathworks.com/help/fixedpoint/ug/data-types-and-scaling-in-digital-hardware.html#bu22l3v-1 )
+- [What Is int8 Quantization and Why Is It Popular for Deep Neural Networks?](https://www.mathworks.com/company/newsletters/articles/what-is-int8-quantization-and-why-is-it-popular-for-deep-neural-networks.html)
 
 
 
